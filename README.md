@@ -151,6 +151,8 @@ external_access_integration_name = "dagster_university_EAI"
 stage_name = "DAGSTER_UNIVERSITY"
 ```
 
+Also, have in mind that the `ACCOUNTADMIN`, `ORGADMIN` and `SECURITYADMIN` roles cannot create services.
+
 #### Database Service
 
 To create the database service run the following query:
@@ -345,5 +347,21 @@ And, if something fails, you can check the service logs with this query:
 
 ```sql
 SELECT SYSTEM$GET_SERVICE_LOGS('{{web_server_service_name}}', 0, 'webserver-container', 20)
+;
+```
+
+### Costs
+
+Have in mind that this implementation is a bit expensive (around 6 credits a day). You can explore the daily costs of the running services with this query:
+
+```sql
+select
+    usage_date,
+    service_type,
+    sum(credits_used)
+from METERING_DAILY_HISTORY
+where service_type = 'SNOWPARK_CONTAINER_SERVICES'
+group by 1, 2
+order by 1 desc, 2 asc
 ;
 ```
