@@ -1,0 +1,6 @@
+load_from:
+  - grpc_server:
+      # This depends on your Snowflake setup
+      host: dagster-code-location-service.landing.prod-analytics.snowflakecomputing.internal
+      port: 4000
+      location_name: "default_code_location"

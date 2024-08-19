@@ -1,0 +1,19 @@
+# Specify the base image and platform (indirectly specified during build)
+FROM --platform=linux/amd64 python:3.10-slim
+
+# Install Dagster libraries and other dependencies
+RUN pip install \
+    dagster \
+    dagster-postgres \
+    dagster-docker \
+    dagster-duckdb
+
+RUN pip install duckdb
+RUN pip install plotly
+RUN pip install geopandas
+
+# Set the working directory
+WORKDIR /opt/dagster/app
+
+# Expose the gRPC server port
+EXPOSE 4000

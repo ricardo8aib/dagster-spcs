@@ -1,0 +1,69 @@
+services:
+  postgresql-container:
+    platform: linux/amd64
+    image: postgres:11
+    container_name: postgresql-container
+    environment:
+      POSTGRES_USER: "postgres_user"
+      POSTGRES_PASSWORD: "postgres_password"
+      POSTGRES_DB: "postgres_db"
+
+  user-code-container:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile_user_code
+    container_name: user-code-container
+    image: user-code-image
+    restart: always
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+      DAGSTER_CURRENT_IMAGE: "user-code-image"
+
+  webserver-container:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile_dagster
+    image: webserver-image
+    entrypoint:
+      - dagster-webserver
+      - -h
+      - "0.0.0.0"
+      - -p
+      - "3000"
+      - -w
+      - workspace.yaml
+    container_name: webserver-container
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+    depends_on:
+      - postgresql-container
+      - user-code-container
+
+  daemon-container:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile_dagster
+    image: daemon-image
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: daemon-container
+    restart: on-failure
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+    depends_on:
+      - postgresql-container
+      - user-code-container
