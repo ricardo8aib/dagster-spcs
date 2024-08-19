@@ -70,8 +70,8 @@ The syntax to create a Snowflake service is the following:
 ```sql
 CREATE SERVICE {{service_name}}
 IN COMPUTE POOL {{compute_pool_name}}
-MIN_INSTANCES=4
-MAX_INSTANCES=8
+MIN_INSTANCES=1
+MAX_INSTANCES=1
 EXTERNAL_ACCESS_INTEGRATIONS = ({{external_access_integration_name}})
 ```
 
@@ -256,8 +256,8 @@ Note:
 ```sql
 CREATE SERVICE {{web_server_service_name}}
 IN COMPUTE POOL {{compute_pool_name}}
-MIN_INSTANCES=4
-MAX_INSTANCES=8
+MIN_INSTANCES=1
+MAX_INSTANCES=1
 EXTERNAL_ACCESS_INTEGRATIONS = ({{external_access_integration_name}})
 FROM SPECIFICATION $$
 spec:
